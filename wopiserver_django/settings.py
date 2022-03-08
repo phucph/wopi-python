@@ -122,5 +122,5 @@ STATIC_URL = '/static/'
 
 
 # for WOPI Server
-# WOPI_FILE_DIR = '/home/qi/Documents/wopi_files/'
-WOPI_FILE_DIR = os.path.join(BASE_DIR,'wopiserver','sample_files')
+WOPI_FILE_DIR = '/mnt/nfs/share-data'
+# WOPI_FILE_DIR = os.path.join(BASE_DIR,'wopiserver','sample_files')
