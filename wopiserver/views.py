@@ -14,7 +14,7 @@ import base64
 import os
 from .models import DocumentFile
 
-#print(DocumentFile.objects.all())
+print(DocumentFile.objects.values("id", "file_url"))
 
 def file_iterator(filename, chunk_size=512):
     '''read file'''
@@ -30,7 +30,14 @@ def file_iterator(filename, chunk_size=512):
 def wopiGetFileInfo(request, fileid='test.txt'):
     '''Get file info. Implements the CheckFileInfo WOPI call'''
     print('Get file info. Implements the CheckFileInfo WOPI call')
+    try:
+        fileid = DocumentFile.objects.filter(pk=fileid).values_list("file_url")[0][0]
+    except Exception as _:
+        return HttpResponse(json.dumps({}, ensure_ascii=False), content_type='application/json; charset=utf-8')
+    if fileid[0] == '/':
+        fileid = fileid[1:]
     file_path = os.path.join(WOPI_FILE_DIR, fileid)
+    print(file_path)
     rf = open(file_path, 'rb')
     f = rf.read()
 
@@ -50,6 +57,12 @@ def wopiGetFileInfo(request, fileid='test.txt'):
 def wopiFileContents(request, fileid='test.txt'):
     '''Request to file contents, Implements the GetFile WOPI call'''
     print('Request to file contents, Implements the GetFile WOPI call')
+    try:
+        fileid = DocumentFile.objects.filter(pk=fileid).values_list("file_url")[0][0]
+    except Exception as _:
+        return HttpResponse('')
+    if fileid[0] == '/':
+        fileid = fileid[1:]
     file_path = os.path.join(WOPI_FILE_DIR, fileid)
     if (request.method == 'GET'):
         print('get file contents')

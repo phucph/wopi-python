@@ -83,11 +83,10 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "rdportal",
-        "USER": "rdportal",
-        "PASSWORD": "123456a@",
-        "HOST": "172.16.12.101",
+        "USER": "postgres",
+        "PASSWORD": "gempassword",
+        "HOST": "rd-portal-db.cetcbidnzmjs.ap-southeast-1.rds.amazonaws.com",
         "PORT": "5432",
-        'TIME_ZONE': 'Asia/Tokyo',
     },
 }
 
@@ -133,5 +132,5 @@ STATIC_URL = '/static/'
 
 
 # for WOPI Server
-WOPI_FILE_DIR = '/mnt/nfs/share-data/rd-portal/kintone/'
+WOPI_FILE_DIR = '/mnt/nfs/share-data/rd-portal/'
 # WOPI_FILE_DIR = os.path.join(BASE_DIR,'wopiserver','sample_files')
