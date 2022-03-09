@@ -10,7 +10,10 @@ from . import views
 
 app_name = 'wopiserver'
 urlpatterns = [
-    path('files', views.wopiGetFileInfo),
-    path('files/contents', views.wopiFileContents),
+#    path('files', views.wopiGetFileInfo),
+#    path('files/contents', views.wopiFileContents),
+    re_path(r'^files/(?P<fileid>[^/]+)$', views.wopiGetFileInfo),
+#     url(r'^files/(?P<fileid>[^/]+)/$',views.wopiGetFileInfo),
+    re_path(r'^files/(?P<fileid>[^/]+)/contents$', views.wopiFileContents),
 ]
 

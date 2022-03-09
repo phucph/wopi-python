@@ -12,7 +12,9 @@ import json
 import hashlib
 import base64
 import os
+from .models import DocumentFile
 
+#print(DocumentFile.objects.all())
 
 def file_iterator(filename, chunk_size=512):
     '''read file'''
@@ -25,37 +27,35 @@ def file_iterator(filename, chunk_size=512):
                 break
 
 
-def wopiGetFileInfo(request):
+def wopiGetFileInfo(request, fileid='test.txt'):
     '''Get file info. Implements the CheckFileInfo WOPI call'''
     print('Get file info. Implements the CheckFileInfo WOPI call')
-    url = request.GET.get('url', None)
-    try:
-        file_path = os.path.join(WOPI_FILE_DIR, url)
-        rf = open(file_path, 'rb')
-        f = rf.read()
+    file_path = os.path.join(WOPI_FILE_DIR, fileid)
+    rf = open(file_path, 'rb')
+    f = rf.read()
 
-        json_data = {'BaseFileName': url.split('/')[-1], 'OwnerId': 'qi', 'Size': len(f)}
-        dig = hashlib.sha256(f).digest()
-        json_data['SHA256'] = base64.b64encode(dig).decode()
-        json_data['Version'] = '1'
-        json_data['SupportsUpdate'] = True
-        json_data['UserCanWrite'] = True
-        json_data['SupportsLocks'] = True
-    except Exception as _:
-        json_data = {}
+    json_data = {}
+    json_data['BaseFileName'] = fileid
+    json_data['OwnerId'] = 'qi'
+    json_data['Size'] = len(f)
+    dig = hashlib.sha256(f).digest()
+    json_data['SHA256'] = base64.b64encode(dig).decode()
+    json_data['Version'] = '1'
+    json_data['SupportsUpdate'] = True
+    json_data['UserCanWrite'] = True
+    json_data['SupportsLocks'] = True
     return HttpResponse(json.dumps(json_data, ensure_ascii=False), content_type='application/json; charset=utf-8')
 
 
-def wopiFileContents(request):
+def wopiFileContents(request, fileid='test.txt'):
     '''Request to file contents, Implements the GetFile WOPI call'''
     print('Request to file contents, Implements the GetFile WOPI call')
-    url = request.GET.get("url", None)
-    file_path = os.path.join(WOPI_FILE_DIR, url)
+    file_path = os.path.join(WOPI_FILE_DIR, fileid)
     if (request.method == 'GET'):
         print('get file contents')
         response = StreamingHttpResponse(file_iterator(file_path))
         response['Content-Type'] = 'application/octet-stream'
-        response['Content-Disposition'] = 'attachment;filename="{0}"'.format(url)
+        response['Content-Disposition'] = 'attachment;filename="{0}"'.format(fileid)
         return response
     elif (request.method == 'POST'):
         print('Update file with new contents. Implements the PutFile WOPI call')
